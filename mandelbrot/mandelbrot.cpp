@@ -11,15 +11,17 @@ __kernel void mandelbrot(__constant float *input, \
   int id = get_global_id(0); \
   float c_real = input[2*id]; \
   float c_imag = input[2*id+1]; \
-  float real = 0; \
-  float imag = 0; \
+  float real = c_real; \
+  float imag = c_imag; \
   int iter; \
   for(iter=0; iter<num_iter; ++iter) { \
     if(real*real + imag*imag > 4) break; \
-    real = real*real - imag*imag + c_real; \
-    imag = 2*imag*real + c_imag; \
+    float nreal = real*real - imag*imag + c_real; \
+    float nimag = 2*imag*real + c_imag; \
+    real = nreal; \
+    imag = nimag; \
   } \
-  output[id] = 1.0*iter/num_iter; \
+  output[id] = (1.0*iter)/(1.0*num_iter); \
 } \
 ";
 
