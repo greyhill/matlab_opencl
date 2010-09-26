@@ -79,7 +79,7 @@ void mex_implementation(
   kernel.set_arg(2, num_iter);
 
   event.wait();
-  std::size_t local_dims = 1;
+  std::size_t local_dims = kernel.work_group_size(device);
   commands.run_kernel(kernel, 1, &total_size, &local_dims).wait();
 
   std::vector<float> buffer2;
