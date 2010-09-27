@@ -1,5 +1,5 @@
-#include <ghp/util/matlab.hpp>
 #include <ghp/util/cl.hpp>
+#include <ghp/util/matlab.hpp>
 
 #include <complex>
 #include <iostream>
@@ -81,8 +81,7 @@ void mex_implementation(
 
   event.wait();
   std::size_t local_dims = kernel.work_group_size(device);
-  std::size_t dev_max_wg_size = device.max_work_group_size();
-  mexPrintf("%d vs %d!", local_dims, dev_max_wg_size);
+  local_dims = 1;
   commands.run_kernel(kernel, 1, &total_size, &local_dims).wait();
 
   std::vector<float> buffer2;
