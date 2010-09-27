@@ -1,5 +1,5 @@
-#include <ghp/util/cl.hpp>
 #include <ghp/util/matlab.hpp>
+#include <ghp/util/cl.hpp>
 
 #include <complex>
 #include <iostream>
@@ -22,6 +22,7 @@ __kernel void mandelbrot(__constant float *input, \
     imag = nimag; \
   } \
   output[id] = (1.0*iter)/(1.0*num_iter); \
+  output[id] = id; \
 } \
 ";
 
@@ -80,6 +81,8 @@ void mex_implementation(
 
   event.wait();
   std::size_t local_dims = kernel.work_group_size(device);
+  std::size_t dev_max_wg_size = device.max_work_group_size();
+  mexPrintf("%d vs %d!", local_dims, dev_max_wg_size);
   commands.run_kernel(kernel, 1, &total_size, &local_dims).wait();
 
   std::vector<float> buffer2;
