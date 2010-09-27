@@ -22,7 +22,6 @@ __kernel void mandelbrot(__constant float *input, \
     imag = nimag; \
   } \
   output[id] = (1.0*iter)/(1.0*num_iter); \
-  output[id] = id; \
 } \
 ";
 
@@ -81,7 +80,14 @@ void mex_implementation(
 
   event.wait();
   std::size_t local_dims = kernel.work_group_size(device);
-  local_dims = 1;
+  const std::vector<std::size_t> &dev_sizes
+      = device.max_work_item_sizes();
+  for(int i=0; i<3; ++i) {
+    mexPrintf("(%d, %u) ", i, dev_sizes[i]);
+  }
+  mexPrintf("\n");
+  mexPrintf("total size: %u; kernel size: %u; device size: %u\n",
+      total_size, local_dims, device.max_work_group_size());
   commands.run_kernel(kernel, 1, &total_size, &local_dims).wait();
 
   std::vector<float> buffer2;
